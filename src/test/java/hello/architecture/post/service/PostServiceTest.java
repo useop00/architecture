@@ -81,7 +81,7 @@ class PostServiceTest {
         postJpaRepository.saveAll(List.of(post1, post2, post3));
 
         // when
-        PostResponse result = postService.findById(1L);
+        PostResponse result = postService.findById(post1.getId());
 
         // then
         assertThat(result.getTitle()).isEqualTo("제목1");

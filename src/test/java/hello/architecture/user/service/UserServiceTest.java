@@ -37,7 +37,6 @@ class UserServiceTest {
         UserResponse result = userService.create(userCreate);
 
         // then
-        assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getEmail()).isEqualTo("seop@naver.com");
         assertThat(result.getPassword()).isEqualTo("1234");
         assertThat(result.getNickname()).isEqualTo("seop");
@@ -85,6 +84,21 @@ class UserServiceTest {
 
         // then
         assertThat(result.getNickname()).isEqualTo("seop");
+    }
+
+    @Test
+    void passwordDoesNotMatch() throws Exception {
+        // given
+        UserEntity user = UserEntity.builder()
+                .email("seop@naver.com")
+                .password("1234")
+                .nickname("seop")
+                .build();
+        userJpaRepository.save(user);
+
+        //expect
+        assertThatThrownBy(() -> userService.login(user.getEmail(), "3333")
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
