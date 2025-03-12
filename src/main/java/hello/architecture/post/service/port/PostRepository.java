@@ -14,4 +14,6 @@ public interface PostRepository {
     List<PostEntity> findAll();
 
     List<PostEntity> findByWriterIdAndStatus(Long writerId, PostStatus status);
+
+    List<PostEntity> saveAll(List<PostEntity> post1);
 }

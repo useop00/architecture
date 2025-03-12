@@ -2,12 +2,12 @@ package hello.architecture.post.service;
 
 import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.post.controller.response.PostResponse;
-import hello.architecture.post.domain.PostJpaRepository;
 import hello.architecture.post.infrastructure.PostEntity;
 import hello.architecture.post.service.dto.PostCreate;
 import hello.architecture.post.service.dto.PostUpdate;
-import hello.architecture.user.domain.UserJpaRepository;
+import hello.architecture.post.service.port.PostRepository;
 import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,10 +28,10 @@ class PostServiceTest {
     private PostService postService;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private PostJpaRepository postJpaRepository;
+    private PostRepository postRepository;
 
     @Test
     void write() throws Exception {
@@ -41,7 +41,7 @@ class PostServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(writer);
+        userRepository.save(writer);
 
         PostCreate postCreate = PostCreate.builder()
                 .writerId(writer.getId())
@@ -63,25 +63,15 @@ class PostServiceTest {
     @Test
     void findById() throws Exception {
         // given
-        PostEntity post1 = PostEntity.builder()
+        PostEntity post = PostEntity.builder()
                 .title("제목1")
                 .content("내용1")
                 .status(PUBLIC)
                 .build();
-        PostEntity post2 = PostEntity.builder()
-                .title("제목")
-                .content("내용")
-                .status(PUBLIC)
-                .build();
-        PostEntity post3 = PostEntity.builder()
-                .title("제목")
-                .content("내용")
-                .status(PUBLIC)
-                .build();
-        postJpaRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.save(post);
 
         // when
-        PostResponse result = postService.findById(post1.getId());
+        PostResponse result = postService.findById(post.getId());
 
         // then
         assertThat(result.getTitle()).isEqualTo("제목1");
@@ -117,7 +107,7 @@ class PostServiceTest {
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postJpaRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.saveAll(List.of(post1, post2, post3));
 
         // when
         List<PostResponse> result = postService.findAll();
@@ -134,7 +124,7 @@ class PostServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(writer);
+        userRepository.save(writer);
         PostEntity post1 = PostEntity.builder()
                 .writer(writer)
                 .title("제목")
@@ -153,7 +143,7 @@ class PostServiceTest {
                 .content("내용")
                 .status(PRIVATE)
                 .build();
-        postJpaRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.saveAll(List.of(post1, post2, post3));
 
         // when
         List<PostResponse> result = postService.findByWriterIdAndStatus(post1.getWriter().getId(), PRIVATE);
@@ -172,7 +162,7 @@ class PostServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(writer);
+        userRepository.save(writer);
 
         PostEntity post = PostEntity.builder()
                 .writer(writer)
@@ -180,7 +170,7 @@ class PostServiceTest {
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postJpaRepository.save(post);
+        postRepository.save(post);
 
         PostUpdate postUpdate = PostUpdate.builder()
                 .title("라멘")

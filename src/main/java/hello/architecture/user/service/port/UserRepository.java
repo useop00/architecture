@@ -4,7 +4,7 @@ import hello.architecture.user.infrastructure.UserEntity;
 
 public interface UserRepository {
 
-    UserEntity save(UserEntity user);
+    void save(UserEntity user);
 
     UserEntity findById(Long id);
 

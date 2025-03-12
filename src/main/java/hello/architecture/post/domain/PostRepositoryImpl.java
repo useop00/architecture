@@ -34,4 +34,9 @@ public class PostRepositoryImpl implements PostRepository {
     public List<PostEntity> findByWriterIdAndStatus(Long writerId, PostStatus status) {
         return postJpaRepository.findByWriterIdAndStatus(writerId, status);
     }
+
+    @Override
+    public List<PostEntity> saveAll(List<PostEntity> posts) {
+        return postJpaRepository.saveAll(posts);
+    }
 }

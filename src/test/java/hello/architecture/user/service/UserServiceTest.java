@@ -2,10 +2,10 @@ package hello.architecture.user.service;
 
 import hello.architecture.common.exception.UserNotFoundException;
 import hello.architecture.user.controller.response.UserResponse;
-import hello.architecture.user.domain.UserJpaRepository;
 import hello.architecture.user.infrastructure.UserEntity;
 import hello.architecture.user.service.dto.UserCreate;
 import hello.architecture.user.service.dto.UserUpdate;
+import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +22,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Test
     void create() throws Exception {
@@ -50,7 +50,7 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(user);
+        userRepository.save(user);
 
         // when
         UserResponse result = userService.getByEmail(user.getEmail());
@@ -77,7 +77,7 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(user);
+        userRepository.save(user);
 
         // when
         UserResponse result = userService.login(user.getEmail(), user.getPassword());
@@ -94,7 +94,7 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(user);
+        userRepository.save(user);
 
         //expect
         assertThatThrownBy(() -> userService.login(user.getEmail(), "3333")
@@ -109,7 +109,7 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userJpaRepository.save(user);
+        userRepository.save(user);
 
         UserUpdate userUpdate = UserUpdate.builder()
                 .nickname("woo")
