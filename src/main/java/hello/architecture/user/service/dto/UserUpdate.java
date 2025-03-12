@@ -1,8 +1,14 @@
 package hello.architecture.user.service.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class UserUpdate {
-    private String nickname;
+    private final String nickname;
+
+    @Builder
+    private UserUpdate(String nickname) {
+        this.nickname = nickname;
+    }
 }

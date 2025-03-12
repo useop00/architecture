@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "post")
+@Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostEntity {
 
@@ -53,7 +53,7 @@ public class PostEntity {
     public void update(String title, String content, PostStatus status) {
         this.title = title;
         this.content = content;
-        this.status = status;
+        this.status = status != null ? status : this.status;
         this.modifiedAt = LocalDateTime.now();
     }
 }

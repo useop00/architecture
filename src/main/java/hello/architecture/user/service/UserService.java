@@ -41,14 +41,14 @@ public class UserService {
     }
 
     @Transactional
-    public void login(String email, String password) {
+    public UserResponse login(String email, String password) {
         UserEntity user = userJpaRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
         if (isNotEqualsPassword(password, user)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        UserResponse.of(user);
+        return UserResponse.of(user);
     }
 
     private static boolean isNotEqualsPassword(String password, UserEntity user) {
