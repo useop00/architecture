@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @Tag(name = "유저(users)")
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class UserController {
     ) {
         UserResponse response = userService.create(userCreate);
         return ResponseEntity
-                .ok()
+                .status(CREATED)
                 .body(response);
     }
 

@@ -1,13 +1,11 @@
 package hello.architecture.post.controller;
 
 import hello.architecture.post.controller.response.PostResponse;
-import hello.architecture.post.domain.PostJpaRepository;
 import hello.architecture.post.domain.PostStatus;
 import hello.architecture.post.service.PostService;
 import hello.architecture.post.service.dto.PostCreate;
 import hello.architecture.post.service.dto.PostUpdate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
