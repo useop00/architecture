@@ -1,6 +1,7 @@
 package hello.architecture.post.infrastructure;
 
 import hello.architecture.post.domain.PostStatus;
+import hello.architecture.post.service.dto.PostUpdate;
 import hello.architecture.user.infrastructure.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -50,10 +51,10 @@ public class PostEntity {
         this.status = status;
     }
 
-    public void update(String title, String content, PostStatus status) {
-        this.title = title;
-        this.content = content;
-        this.status = status != null ? status : this.status;
+    public void update(PostUpdate postUpdate) {
+        this.title = postUpdate.getTitle();
+        this.content = postUpdate.getContent();
+        this.status = postUpdate.getStatus() != null ? postUpdate.getStatus() : this.status;
         this.modifiedAt = LocalDateTime.now();
     }
 }

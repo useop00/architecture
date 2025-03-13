@@ -34,7 +34,7 @@ public class PostService {
     public PostResponse update(Long id, PostUpdate request) {
         PostEntity post = postRepository.findById(id);
 
-        post.update(request.getTitle(), request.getContent(), request.getStatus());
+        post.update(request);
         return PostResponse.of(postRepository.save(post));
     }
 
