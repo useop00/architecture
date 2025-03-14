@@ -1,6 +1,7 @@
 package hello.architecture.post.controller;
 
 import hello.architecture.post.controller.response.PostResponse;
+import hello.architecture.post.domain.Post;
 import hello.architecture.post.domain.PostStatus;
 import hello.architecture.post.service.PostService;
 import hello.architecture.post.service.dto.PostCreate;
@@ -9,9 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,38 +23,45 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponse> write(@RequestBody PostCreate postCreate) {
-        PostResponse response = postService.write(postCreate);
+        LocalDateTime createAt = LocalDateTime.now();
+        Post response = postService.write(postCreate, createAt);
         return ResponseEntity
                 .status(CREATED)
-                .body(response);
+                .body(PostResponse.of(response));
     }
 
     @GetMapping("/posts")
     public ResponseEntity<List<PostResponse>> findAll() {
-        List<PostResponse> responses = postService.findAll();
+        List<Post> responses = postService.findAll();
         return ResponseEntity
                 .ok()
-                .body(responses);
+                .body(PostResponse.of(responses));
     }
+
 
     @GetMapping("/posts/{id}")
     public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
-        PostResponse response = postService.findById(id);
+        Post response = postService.findById(id);
         return ResponseEntity
                 .ok()
-                .body(response);
+                .body(PostResponse.of(response));
     }
 
     @GetMapping("/posts/{writerId}/{status}")
     public ResponseEntity<List<PostResponse>> findByWriterIdAndStatus(@PathVariable Long writerId, @PathVariable PostStatus status) {
-        List<PostResponse> responses = postService.findByWriterIdAndStatus(writerId, status);
-        return ResponseEntity.ok(responses);
+        List<Post> responses = postService.findByWriterIdAndStatus(writerId, status);
+        return ResponseEntity
+                .ok()
+                .body(PostResponse.of(responses));
     }
 
     @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponse> update(@PathVariable Long id, @RequestBody PostUpdate postUpdate) {
-        PostResponse response = postService.update(id, postUpdate);
-        return ResponseEntity.ok(response);
+        LocalDateTime modifyAt = LocalDateTime.now();
+        Post response = postService.update(id, postUpdate, modifyAt);
+        return ResponseEntity
+                .ok()
+                .body(PostResponse.of(response));
     }
 
 

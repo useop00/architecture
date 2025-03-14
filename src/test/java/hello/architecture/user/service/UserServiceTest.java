@@ -1,8 +1,8 @@
 package hello.architecture.user.service;
 
 import hello.architecture.common.exception.UserNotFoundException;
-import hello.architecture.user.controller.response.UserResponse;
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
+import hello.architecture.user.service.dto.Login;
 import hello.architecture.user.service.dto.UserCreate;
 import hello.architecture.user.service.dto.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
@@ -34,7 +34,7 @@ class UserServiceTest {
                 .build();
 
         // when
-        UserResponse result = userService.create(userCreate);
+        User result = userService.create(userCreate);
 
         // then
         assertThat(result.getEmail()).isEqualTo("seop@naver.com");
@@ -45,15 +45,15 @@ class UserServiceTest {
     @Test
     void getByEmail() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         // when
-        UserResponse result = userService.getByEmail(user.getEmail());
+        User result = userService.getByEmail(savedUser.getEmail());
 
         // then
         assertThat(result.getNickname()).isEqualTo("seop");
@@ -72,7 +72,7 @@ class UserServiceTest {
     @Test
     void login() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
@@ -80,46 +80,47 @@ class UserServiceTest {
         userRepository.save(user);
 
         // when
-        UserResponse result = userService.login(user.getEmail(), user.getPassword());
+        User result = userService.login(Login.of(user.getEmail(), user.getPassword()));
 
         // then
         assertThat(result.getNickname()).isEqualTo("seop");
+        assertThat(result.getEmail()).isEqualTo("seop@naver.com");
     }
 
     @Test
     void passwordDoesNotMatch() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        UserCreate userCreate = UserCreate.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
+        User user = userService.create(userCreate);
 
         //expect
-        assertThatThrownBy(() -> userService.login(user.getEmail(), "3333")
-        ).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> userService.login( Login.of(user.getEmail(), "3333"))
+        ).isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
     void update() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        UserCreate userCreate = UserCreate.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
-
+        User user = userService.create(userCreate);
         UserUpdate userUpdate = UserUpdate.builder()
                 .nickname("woo")
                 .build();
 
         // when
-        userService.update(user.getId(), userUpdate);
+        User update = userService.update(user.getId(), userUpdate);
 
         // then
-        assertThat(user.getNickname()).isEqualTo("woo");
+        User result = userService.getByEmail(update.getEmail());
+        assertThat(result.getNickname()).isEqualTo("woo");
     }
 
 }

@@ -1,12 +1,14 @@
 package hello.architecture.user.service.port;
 
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
+
+import java.util.Optional;
 
 public interface UserRepository {
 
-    void save(UserEntity user);
+    User save(User user);
 
-    UserEntity findById(Long id);
+    Optional<User> findById(Long id);
 
-    UserEntity findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

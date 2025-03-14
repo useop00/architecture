@@ -1,6 +1,6 @@
 package hello.architecture.user.controller.response;
 
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public class UserResponse {
         this.nickname = nickname;
     }
 
-    public static UserResponse of(UserEntity user) {
+    public static UserResponse of(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())

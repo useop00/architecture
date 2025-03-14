@@ -1,7 +1,8 @@
 package hello.architecture.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
+import hello.architecture.user.service.dto.Login;
 import hello.architecture.user.service.dto.UserCreate;
 import hello.architecture.user.service.dto.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
@@ -54,17 +55,18 @@ class UserControllerTest {
     @Test
     void login() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
         userRepository.save(user);
 
+        Login login = Login.of(user.getEmail(), "1234");
+
         // when & then
         mockMvc.perform(post("/login")
-                        .header("EMAIL", user.getEmail())
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(objectMapper.writeValueAsString(login))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("seop@naver.com"))
@@ -74,7 +76,7 @@ class UserControllerTest {
     @Test
     void updateMyInfo() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")

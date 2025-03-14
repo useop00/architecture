@@ -1,7 +1,9 @@
 package hello.architecture.user.controller;
 
 import hello.architecture.user.controller.response.UserResponse;
+import hello.architecture.user.domain.User;
 import hello.architecture.user.service.UserService;
+import hello.architecture.user.service.dto.Login;
 import hello.architecture.user.service.dto.UserCreate;
 import hello.architecture.user.service.dto.UserUpdate;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,25 +23,19 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<UserResponse> create(
-            @RequestBody UserCreate userCreate
-    ) {
-        UserResponse response = userService.create(userCreate);
+    public ResponseEntity<UserResponse> create(@RequestBody UserCreate userCreate) {
+        User response = userService.create(userCreate);
         return ResponseEntity
                 .status(CREATED)
-                .body(response);
+                .body(UserResponse.of(response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
-            @Parameter(name = "EMAIL", in = ParameterIn.HEADER)
-            @RequestHeader("EMAIL") String email
-    ) {
-        UserResponse user = userService.getByEmail(email);
-        UserResponse response = userService.login(user.getEmail(), user.getPassword());
+    public ResponseEntity<UserResponse> login(@RequestBody Login login) {
+        User response = userService.login(login);
         return ResponseEntity
                 .ok()
-                .body(response);
+                .body(UserResponse.of(response));
     }
 
 
@@ -50,12 +46,12 @@ public class UserController {
             @RequestHeader("EMAIL") String email,
             @RequestBody UserUpdate update
     ) {
-        UserResponse response = userService.getByEmail(email);
+        User response = userService.getByEmail(email);
         userService.update(response.getId(), update);
-        UserResponse afterUpdate = userService.getByEmail(email);
+        User afterUpdate = userService.getByEmail(email);
         return ResponseEntity
                 .ok()
-                .body(afterUpdate);
+                .body(UserResponse.of(afterUpdate));
     }
 
 }

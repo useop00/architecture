@@ -1,18 +1,18 @@
 package hello.architecture.post.service;
 
 import hello.architecture.common.exception.PostNotFoundException;
-import hello.architecture.post.controller.response.PostResponse;
-import hello.architecture.post.infrastructure.PostEntity;
+import hello.architecture.post.domain.Post;
 import hello.architecture.post.service.dto.PostCreate;
 import hello.architecture.post.service.dto.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static hello.architecture.post.domain.PostStatus.PRIVATE;
@@ -36,42 +36,52 @@ class PostServiceTest {
     @Test
     void write() throws Exception {
         // given
-        UserEntity writer = UserEntity.builder()
+        LocalDateTime createAt = LocalDateTime.now();
+        User writer = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(writer);
+        User savedUser = userRepository.save(writer);
 
         PostCreate postCreate = PostCreate.builder()
-                .writerId(writer.getId())
                 .title("제목")
+                .writerId(savedUser.getId())
                 .content("내용")
                 .status(PUBLIC)
                 .build();
 
         // when
-        PostResponse result = postService.write(postCreate);
+        Post result = postService.write(postCreate, createAt);
 
         // then
         assertThat(result.getContent()).isEqualTo("내용");
         assertThat(result.getTitle()).isEqualTo("제목");
-        assertThat(result.getStatus()).isEqualTo(PUBLIC);
         assertThat(result.getWriter().getEmail()).isEqualTo("seop@naver.com");
+        assertThat(result.getWriter().getNickname()).isEqualTo("seop");
+        assertThat(result.getStatus()).isEqualTo(PUBLIC);
+        assertThat(result.getCreateAt()).isEqualTo(createAt);
     }
 
     @Test
     void findById() throws Exception {
         // given
-        PostEntity post = PostEntity.builder()
+        User writer = User.builder()
+                .email("seop@naver.com")
+                .password("1234")
+                .nickname("seop")
+                .build();
+        User savedUser = userRepository.save(writer);
+        Post post = Post.builder()
                 .title("제목1")
                 .content("내용1")
                 .status(PUBLIC)
+                .writer(savedUser)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
         // when
-        PostResponse result = postService.findById(post.getId());
+        Post result = postService.findById(savedPost.getId());
 
         // then
         assertThat(result.getTitle()).isEqualTo("제목1");
@@ -92,61 +102,76 @@ class PostServiceTest {
     @Test
     void findAll() throws Exception {
         // given
-        PostEntity post1 = PostEntity.builder()
+        User writer = User.builder()
+                .email("seop@naver.com")
+                .password("1234")
+                .nickname("seop")
+                .build();
+        User savedUser = userRepository.save(writer);
+        Post post1 = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        PostEntity post2 = PostEntity.builder()
+        Post post2 = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        PostEntity post3 = PostEntity.builder()
+        Post post3 = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.save(post1);
+        postRepository.save(post2);
+        postRepository.save(post3);
 
         // when
-        List<PostResponse> result = postService.findAll();
+        List<Post> result = postService.findAll();
 
         // then
         assertThat(result).hasSize(3);
+        assertThat(result.get(0).getWriter().getEmail()).isEqualTo("seop@naver.com");
     }
 
     @Test
     void findByWriterIdAndStatus() throws Exception {
         // given
-        UserEntity writer = UserEntity.builder()
+        User writer = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(writer);
-        PostEntity post1 = PostEntity.builder()
-                .writer(writer)
+        User savedUser = userRepository.save(writer);
+        Post post1 = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        PostEntity post2 = PostEntity.builder()
-                .writer(writer)
+        Post post2 = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        PostEntity post3 = PostEntity.builder()
-                .writer(writer)
+        Post post3 = Post.builder()
+                .writer(savedUser)
                 .title("제목ㅋ.ㅋ.ㅋ")
                 .content("내용")
                 .status(PRIVATE)
                 .build();
-        postRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.save(post1);
+        postRepository.save(post2);
+        postRepository.save(post3);
+
 
         // when
-        List<PostResponse> result = postService.findByWriterIdAndStatus(post1.getWriter().getId(), PRIVATE);
+        List<Post> result = postService.findByWriterIdAndStatus(savedUser.getId(), PRIVATE);
 
         // then
         assertThat(result).hasSize(1);
@@ -157,33 +182,35 @@ class PostServiceTest {
     @Test
     void update() throws Exception {
         // given
-        UserEntity writer = UserEntity.builder()
+        LocalDateTime modifyAt = LocalDateTime.now();
+        User writer = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(writer);
+        User savedUser = userRepository.save(writer);
 
-        PostEntity post = PostEntity.builder()
-                .writer(writer)
+        Post post = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
         PostUpdate postUpdate = PostUpdate.builder()
                 .title("라멘")
                 .content("먹고싶다")
+                .status(PRIVATE)
                 .build();
 
         // when
-        PostResponse result = postService.update(post.getId(), postUpdate);
+        Post result = postService.update(savedPost.getId(), postUpdate, modifyAt);
 
         // then
         assertThat(result.getTitle()).isEqualTo("라멘");
         assertThat(result.getContent()).isEqualTo("먹고싶다");
-        assertThat(result.getStatus()).isEqualTo(PUBLIC);
+        assertThat(result.getStatus()).isEqualTo(PRIVATE);
         assertThat(result.getWriter().getEmail()).isEqualTo("seop@naver.com");
     }
 

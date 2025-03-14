@@ -1,13 +1,12 @@
 package hello.architecture.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hello.architecture.post.controller.response.PostResponse;
-import hello.architecture.post.infrastructure.PostEntity;
+import hello.architecture.post.domain.Post;
 import hello.architecture.post.service.PostService;
 import hello.architecture.post.service.dto.PostCreate;
 import hello.architecture.post.service.dto.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +47,14 @@ class PostControllerTest {
     @Test
     void write() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         PostCreate postCreate = PostCreate.builder()
-                .writerId(user.getId())
+                .writerId(savedUser.getId())
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
@@ -75,25 +74,36 @@ class PostControllerTest {
     @Test
     void findAll() throws Exception {
         // given
-        PostEntity post1 = PostEntity.builder()
+        User user = User.builder()
+                .email("seop@naver.com")
+                .password("1234")
+                .nickname("seop")
+                .build();
+        User savedUser = userRepository.save(user);
+        Post post1 = Post.builder()
+                .writer(savedUser)
                 .title("제목1")
                 .content("내용1")
                 .status(PUBLIC)
                 .build();
-        PostEntity post2 = PostEntity.builder()
+        Post post2 = Post.builder()
+                .writer(savedUser)
                 .title("제목2")
                 .content("내용2")
                 .status(PUBLIC)
                 .build();
-        PostEntity post3 = PostEntity.builder()
+        Post post3 = Post.builder()
+                .writer(savedUser)
                 .title("제목3")
                 .content("내용3")
                 .status(PUBLIC)
                 .build();
-        postRepository.saveAll(List.of(post1, post2, post3));
+        postRepository.save(post1);
+        postRepository.save(post2);
+        postRepository.save(post3);
 
         // when
-        List<PostResponse> result = postService.findAll();
+        List<Post> result = postService.findAll();
 
         // then
         mockMvc.perform(get("/posts")
@@ -105,16 +115,23 @@ class PostControllerTest {
     @Test
     void findById() throws Exception {
         // given
-        PostEntity post = PostEntity.builder()
+        User user = User.builder()
+                .email("seop@naver.com")
+                .password("1234")
+                .nickname("seop")
+                .build();
+        User savedUser = userRepository.save(user);
+        Post post = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
         // when & then
-        mockMvc.perform(get("/posts/{id}", post.getId())
-                        .content(objectMapper.writeValueAsString(post))
+        mockMvc.perform(get("/posts/{id}", savedPost.getId())
+                        .content(objectMapper.writeValueAsString(savedPost))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("제목"))
@@ -126,25 +143,25 @@ class PostControllerTest {
     @Test
     void findByWriterIdAndStatus() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
-        PostEntity post = PostEntity.builder()
-                .writer(user)
+        User savedUser = userRepository.save(user);
+        Post post = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
         // when
-        List<PostResponse> result = postService.findByWriterIdAndStatus(user.getId(), PUBLIC);
+        List<Post> result = postService.findByWriterIdAndStatus(savedPost.getId(), PUBLIC);
 
         // then
-        mockMvc.perform(get("/posts/{id}/{status}", post.getId(), post.getStatus())
+        mockMvc.perform(get("/posts/{id}/{status}", savedPost.getId(), savedPost.getStatus())
                         .content(objectMapper.writeValueAsString(result))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -155,19 +172,19 @@ class PostControllerTest {
     @Test
     void update() throws Exception {
         // given
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("seop@naver.com")
                 .password("1234")
                 .nickname("seop")
                 .build();
-        userRepository.save(user);
-        PostEntity post = PostEntity.builder()
-                .writer(user)
+        User savedUser = userRepository.save(user);
+        Post post = Post.builder()
+                .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
         // when
         PostUpdate postUpdate = PostUpdate.builder()
@@ -177,7 +194,7 @@ class PostControllerTest {
                 .build();
 
         // then
-        mockMvc.perform(put("/posts/{id}", post.getId())
+        mockMvc.perform(put("/posts/{id}", savedPost.getId())
                         .content(objectMapper.writeValueAsString(postUpdate))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())

@@ -1,7 +1,8 @@
 package hello.architecture.user.service;
 
-import hello.architecture.user.controller.response.UserResponse;
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.common.exception.UserNotFoundException;
+import hello.architecture.user.domain.User;
+import hello.architecture.user.service.dto.Login;
 import hello.architecture.user.service.dto.UserCreate;
 import hello.architecture.user.service.dto.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
@@ -17,38 +18,41 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserResponse create(UserCreate create) {
-        UserEntity user = create.toEntity();
-        userRepository.save(user);
+    public User create(UserCreate request) {
+        User user = User.from(request);
+        user = userRepository.save(user);
 
-        return UserResponse.of(user);
+        return user;
     }
 
-    public UserResponse getByEmail(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        return UserResponse.of(user);
-    }
-
-    @Transactional
-    public void update(long id, UserUpdate update) {
-        UserEntity user = userRepository.findById(id);
-        user.update(update.getNickname());
-
-        UserResponse.of(user);
-    }
-
-    @Transactional
-    public UserResponse login(String email, String password) {
-        UserEntity user = userRepository.findByEmail(email);
-
-        if (isNotEqualsPassword(password, user)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+    public User getByEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new UserNotFoundException();
         }
-
-        return UserResponse.of(user);
+        return userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
     }
 
-    private static boolean isNotEqualsPassword(String password, UserEntity user) {
-        return !user.getPassword().equals(password);
+    @Transactional
+    public User update(long id, UserUpdate update) {
+        User user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        user = user.update(update);
+        userRepository.save(user);
+        return user;
+    }
+
+    @Transactional
+    public User login(Login login) {
+        User user = getByEmail(login.getEmail());
+        if (!user.getPassword().equals(login.getPassword())) {
+            throw new UserNotFoundException();
+        }
+        return userRepository.save(user);
+    }
+
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

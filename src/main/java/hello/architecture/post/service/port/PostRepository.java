@@ -1,19 +1,19 @@
 package hello.architecture.post.service.port;
 
+import hello.architecture.post.domain.Post;
 import hello.architecture.post.domain.PostStatus;
-import hello.architecture.post.infrastructure.PostEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository {
 
-    PostEntity save(PostEntity post);
+    Post save(Post post);
 
-    PostEntity findById(Long id);
+    Optional<Post> findById(Long id);
 
-    List<PostEntity> findAll();
+    List<Post> findAll();
 
-    List<PostEntity> findByWriterIdAndStatus(Long writerId, PostStatus status);
+    List<Post> findByWriterIdAndStatus(Long writerId, PostStatus status);
 
-    List<PostEntity> saveAll(List<PostEntity> post1);
 }

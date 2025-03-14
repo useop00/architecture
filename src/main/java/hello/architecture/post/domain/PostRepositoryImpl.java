@@ -1,12 +1,13 @@
 package hello.architecture.post.domain;
 
-import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.post.infrastructure.PostEntity;
 import hello.architecture.post.service.port.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,28 +16,25 @@ public class PostRepositoryImpl implements PostRepository {
     private final PostJpaRepository postJpaRepository;
 
     @Override
-    public PostEntity save(PostEntity post) {
-        return postJpaRepository.save(post);
+    public Post save(Post post) {
+        return postJpaRepository.save(PostEntity.from(post)).toModel();
     }
 
     @Override
-    public PostEntity findById(Long id) {
-        return postJpaRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
+    public Optional<Post> findById(Long id) {
+        return postJpaRepository.findById(id).map(PostEntity::toModel);
     }
 
     @Override
-    public List<PostEntity> findAll() {
-        return postJpaRepository.findAll();
+    public List<Post> findAll() {
+        return postJpaRepository.findAll().stream()
+                .map(PostEntity::toModel).collect(Collectors.toList());
     }
 
     @Override
-    public List<PostEntity> findByWriterIdAndStatus(Long writerId, PostStatus status) {
-        return postJpaRepository.findByWriterIdAndStatus(writerId, status);
+    public List<Post> findByWriterIdAndStatus(Long writerId, PostStatus status) {
+        return postJpaRepository.findByWriterIdAndStatus(writerId, status).stream()
+                .map(PostEntity::toModel).collect(Collectors.toList());
     }
 
-    @Override
-    public List<PostEntity> saveAll(List<PostEntity> posts) {
-        return postJpaRepository.saveAll(posts);
-    }
 }

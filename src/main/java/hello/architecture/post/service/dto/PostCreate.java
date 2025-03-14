@@ -1,8 +1,6 @@
 package hello.architecture.post.service.dto;
 
 import hello.architecture.post.domain.PostStatus;
-import hello.architecture.post.infrastructure.PostEntity;
-import hello.architecture.user.infrastructure.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,15 +18,6 @@ public class PostCreate {
         this.title = title;
         this.content = content;
         this.status = status;
-    }
-
-    public PostEntity toEntity(UserEntity user) {
-        return PostEntity.builder()
-                .writer(user)
-                .title(title)
-                .content(content)
-                .status(status)
-                .build();
     }
 }
 

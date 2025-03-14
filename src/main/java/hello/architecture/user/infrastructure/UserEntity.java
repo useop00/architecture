@@ -1,5 +1,6 @@
 package hello.architecture.user.infrastructure;
 
+import hello.architecture.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +33,21 @@ public class UserEntity {
         this.nickname = nickname;
     }
 
-    public void update(String nickname) {
-        this.nickname = nickname;
+    public static UserEntity from(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.id = user.getId();
+        userEntity.email = user.getEmail();
+        userEntity.password = user.getPassword();
+        userEntity.nickname = user.getNickname();
+        return userEntity;
+    }
+
+    public User toModel() {
+        return User.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .build();
     }
 }
