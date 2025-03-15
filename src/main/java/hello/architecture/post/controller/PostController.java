@@ -6,6 +6,7 @@ import hello.architecture.post.domain.Post;
 import hello.architecture.post.domain.PostCreate;
 import hello.architecture.post.domain.PostStatus;
 import hello.architecture.post.domain.PostUpdate;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
+@Builder
 @RequiredArgsConstructor
 public class PostController {
 
