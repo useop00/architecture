@@ -2,9 +2,9 @@ package hello.architecture.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.architecture.user.domain.User;
-import hello.architecture.user.service.dto.Login;
-import hello.architecture.user.service.dto.UserCreate;
-import hello.architecture.user.service.dto.UserUpdate;
+import hello.architecture.user.domain.Login;
+import hello.architecture.user.domain.UserCreate;
+import hello.architecture.user.domain.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,10 +2,11 @@ package hello.architecture.post.service;
 
 import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.common.exception.UserNotFoundException;
+import hello.architecture.post.controller.port.PostService;
 import hello.architecture.post.domain.Post;
 import hello.architecture.post.domain.PostStatus;
-import hello.architecture.post.service.dto.PostCreate;
-import hello.architecture.post.service.dto.PostUpdate;
+import hello.architecture.post.domain.PostCreate;
+import hello.architecture.post.domain.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
 import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
@@ -19,7 +20,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PostService {
+public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;

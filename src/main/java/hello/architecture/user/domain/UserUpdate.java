@@ -1,4 +1,4 @@
-package hello.architecture.user.service.dto;
+package hello.architecture.user.domain;
 
 import lombok.Builder;
 import lombok.Getter;

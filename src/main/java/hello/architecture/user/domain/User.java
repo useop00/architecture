@@ -1,7 +1,5 @@
 package hello.architecture.user.domain;
 
-import hello.architecture.user.service.dto.UserCreate;
-import hello.architecture.user.service.dto.UserUpdate;
 import lombok.Builder;
 import lombok.Getter;
 

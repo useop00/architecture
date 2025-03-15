@@ -1,11 +1,11 @@
 package hello.architecture.user.controller;
 
+import hello.architecture.user.controller.port.UserService;
 import hello.architecture.user.controller.response.UserResponse;
+import hello.architecture.user.domain.Login;
 import hello.architecture.user.domain.User;
-import hello.architecture.user.service.UserService;
-import hello.architecture.user.service.dto.Login;
-import hello.architecture.user.service.dto.UserCreate;
-import hello.architecture.user.service.dto.UserUpdate;
+import hello.architecture.user.domain.UserCreate;
+import hello.architecture.user.domain.UserUpdate;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;

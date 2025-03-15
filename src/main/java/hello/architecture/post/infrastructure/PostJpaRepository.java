@@ -1,6 +1,6 @@
-package hello.architecture.post.domain;
+package hello.architecture.post.infrastructure;
 
-import hello.architecture.post.infrastructure.PostEntity;
+import hello.architecture.post.domain.PostStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

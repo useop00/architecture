@@ -1,6 +1,5 @@
-package hello.architecture.post.service.dto;
+package hello.architecture.post.domain;
 
-import hello.architecture.post.domain.PostStatus;
 import lombok.Builder;
 import lombok.Getter;
 

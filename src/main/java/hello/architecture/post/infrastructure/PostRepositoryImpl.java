@@ -1,6 +1,7 @@
-package hello.architecture.post.domain;
+package hello.architecture.post.infrastructure;
 
-import hello.architecture.post.infrastructure.PostEntity;
+import hello.architecture.post.domain.Post;
+import hello.architecture.post.domain.PostStatus;
 import hello.architecture.post.service.port.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

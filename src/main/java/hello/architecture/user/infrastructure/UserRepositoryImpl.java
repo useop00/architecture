@@ -1,6 +1,6 @@
-package hello.architecture.user.domain;
+package hello.architecture.user.infrastructure;
 
-import hello.architecture.user.infrastructure.UserEntity;
+import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

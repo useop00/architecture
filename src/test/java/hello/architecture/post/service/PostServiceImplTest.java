@@ -2,8 +2,8 @@ package hello.architecture.post.service;
 
 import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.post.domain.Post;
-import hello.architecture.post.service.dto.PostCreate;
-import hello.architecture.post.service.dto.PostUpdate;
+import hello.architecture.post.domain.PostCreate;
+import hello.architecture.post.domain.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
 import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
@@ -22,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class PostServiceTest {
+class PostServiceImplTest {
 
     @Autowired
-    private PostService postService;
+    private PostServiceImpl postServiceImpl;
 
     @Autowired
     private UserRepository userRepository;
@@ -52,7 +52,7 @@ class PostServiceTest {
                 .build();
 
         // when
-        Post result = postService.write(postCreate, createAt);
+        Post result = postServiceImpl.write(postCreate, createAt);
 
         // then
         assertThat(result.getContent()).isEqualTo("내용");
@@ -81,7 +81,7 @@ class PostServiceTest {
         Post savedPost = postRepository.save(post);
 
         // when
-        Post result = postService.findById(savedPost.getId());
+        Post result = postServiceImpl.findById(savedPost.getId());
 
         // then
         assertThat(result.getTitle()).isEqualTo("제목1");
@@ -95,7 +95,7 @@ class PostServiceTest {
 
         //expect
         assertThatThrownBy(() ->
-                postService.findById(postId)
+                postServiceImpl.findById(postId)
         ).isInstanceOf(PostNotFoundException.class);
     }
 
@@ -131,7 +131,7 @@ class PostServiceTest {
         postRepository.save(post3);
 
         // when
-        List<Post> result = postService.findAll();
+        List<Post> result = postServiceImpl.findAll();
 
         // then
         assertThat(result).hasSize(3);
@@ -171,7 +171,7 @@ class PostServiceTest {
 
 
         // when
-        List<Post> result = postService.findByWriterIdAndStatus(savedUser.getId(), PRIVATE);
+        List<Post> result = postServiceImpl.findByWriterIdAndStatus(savedUser.getId(), PRIVATE);
 
         // then
         assertThat(result).hasSize(1);
@@ -205,7 +205,7 @@ class PostServiceTest {
                 .build();
 
         // when
-        Post result = postService.update(savedPost.getId(), postUpdate, modifyAt);
+        Post result = postServiceImpl.update(savedPost.getId(), postUpdate, modifyAt);
 
         // then
         assertThat(result.getTitle()).isEqualTo("라멘");

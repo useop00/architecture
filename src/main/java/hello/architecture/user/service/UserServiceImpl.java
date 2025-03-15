@@ -1,10 +1,11 @@
 package hello.architecture.user.service;
 
 import hello.architecture.common.exception.UserNotFoundException;
+import hello.architecture.user.controller.port.UserService;
 import hello.architecture.user.domain.User;
-import hello.architecture.user.service.dto.Login;
-import hello.architecture.user.service.dto.UserCreate;
-import hello.architecture.user.service.dto.UserUpdate;
+import hello.architecture.user.domain.Login;
+import hello.architecture.user.domain.UserCreate;
+import hello.architecture.user.domain.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -51,8 +52,4 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-    }
 }

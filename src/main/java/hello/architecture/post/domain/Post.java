@@ -1,7 +1,5 @@
 package hello.architecture.post.domain;
 
-import hello.architecture.post.service.dto.PostCreate;
-import hello.architecture.post.service.dto.PostUpdate;
 import hello.architecture.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;

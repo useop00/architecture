@@ -1,7 +1,8 @@
 package hello.architecture.post.domain;
 
 import hello.architecture.post.infrastructure.PostEntity;
-import hello.architecture.user.domain.UserJpaRepository;
+import hello.architecture.post.infrastructure.PostJpaRepository;
+import hello.architecture.user.infrastructure.UserJpaRepository;
 import hello.architecture.user.infrastructure.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

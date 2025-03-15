@@ -2,9 +2,9 @@ package hello.architecture.user.service;
 
 import hello.architecture.common.exception.UserNotFoundException;
 import hello.architecture.user.domain.User;
-import hello.architecture.user.service.dto.Login;
-import hello.architecture.user.service.dto.UserCreate;
-import hello.architecture.user.service.dto.UserUpdate;
+import hello.architecture.user.domain.Login;
+import hello.architecture.user.domain.UserCreate;
+import hello.architecture.user.domain.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class UserServiceTest {
+class UserServiceImplTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private UserRepository userRepository;
@@ -34,7 +34,7 @@ class UserServiceTest {
                 .build();
 
         // when
-        User result = userService.create(userCreate);
+        User result = userServiceImpl.create(userCreate);
 
         // then
         assertThat(result.getEmail()).isEqualTo("seop@naver.com");
@@ -53,7 +53,7 @@ class UserServiceTest {
         User savedUser = userRepository.save(user);
 
         // when
-        User result = userService.getByEmail(savedUser.getEmail());
+        User result = userServiceImpl.getByEmail(savedUser.getEmail());
 
         // then
         assertThat(result.getNickname()).isEqualTo("seop");
@@ -65,7 +65,7 @@ class UserServiceTest {
         String email = "";
 
         //expect
-        assertThatThrownBy(() -> userService.getByEmail(email)
+        assertThatThrownBy(() -> userServiceImpl.getByEmail(email)
         ).isInstanceOf(UserNotFoundException.class);
     }
 
@@ -80,7 +80,7 @@ class UserServiceTest {
         userRepository.save(user);
 
         // when
-        User result = userService.login(Login.of(user.getEmail(), user.getPassword()));
+        User result = userServiceImpl.login(Login.of(user.getEmail(), user.getPassword()));
 
         // then
         assertThat(result.getNickname()).isEqualTo("seop");
@@ -95,10 +95,10 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        User user = userService.create(userCreate);
+        User user = userServiceImpl.create(userCreate);
 
         //expect
-        assertThatThrownBy(() -> userService.login( Login.of(user.getEmail(), "3333"))
+        assertThatThrownBy(() -> userServiceImpl.login( Login.of(user.getEmail(), "3333"))
         ).isInstanceOf(UserNotFoundException.class);
     }
 
@@ -110,16 +110,16 @@ class UserServiceTest {
                 .password("1234")
                 .nickname("seop")
                 .build();
-        User user = userService.create(userCreate);
+        User user = userServiceImpl.create(userCreate);
         UserUpdate userUpdate = UserUpdate.builder()
                 .nickname("woo")
                 .build();
 
         // when
-        User update = userService.update(user.getId(), userUpdate);
+        User update = userServiceImpl.update(user.getId(), userUpdate);
 
         // then
-        User result = userService.getByEmail(update.getEmail());
+        User result = userServiceImpl.getByEmail(update.getEmail());
         assertThat(result.getNickname()).isEqualTo("woo");
     }
 

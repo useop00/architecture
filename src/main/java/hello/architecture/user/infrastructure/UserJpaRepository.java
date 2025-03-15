@@ -1,6 +1,5 @@
-package hello.architecture.user.domain;
+package hello.architecture.user.infrastructure;
 
-import hello.architecture.user.infrastructure.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -2,9 +2,9 @@ package hello.architecture.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.architecture.post.domain.Post;
-import hello.architecture.post.service.PostService;
-import hello.architecture.post.service.dto.PostCreate;
-import hello.architecture.post.service.dto.PostUpdate;
+import hello.architecture.post.service.PostServiceImpl;
+import hello.architecture.post.domain.PostCreate;
+import hello.architecture.post.domain.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
 import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;
@@ -42,7 +42,7 @@ class PostControllerTest {
     private PostRepository postRepository;
 
     @Autowired
-    private PostService postService;
+    private PostServiceImpl postServiceImpl;
 
     @Test
     void write() throws Exception {
@@ -103,7 +103,7 @@ class PostControllerTest {
         postRepository.save(post3);
 
         // when
-        List<Post> result = postService.findAll();
+        List<Post> result = postServiceImpl.findAll();
 
         // then
         mockMvc.perform(get("/posts")
@@ -158,7 +158,7 @@ class PostControllerTest {
         Post savedPost = postRepository.save(post);
 
         // when
-        List<Post> result = postService.findByWriterIdAndStatus(savedPost.getId(), PUBLIC);
+        List<Post> result = postServiceImpl.findByWriterIdAndStatus(savedPost.getId(), PUBLIC);
 
         // then
         mockMvc.perform(get("/posts/{id}/{status}", savedPost.getId(), savedPost.getStatus())
