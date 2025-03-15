@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,13 +28,13 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findAll() {
         return postJpaRepository.findAll().stream()
-                .map(PostEntity::toModel).collect(Collectors.toList());
+                .map(PostEntity::toModel).toList();
     }
 
     @Override
     public List<Post> findByWriterIdAndStatus(Long writerId, PostStatus status) {
         return postJpaRepository.findByWriterIdAndStatus(writerId, status).stream()
-                .map(PostEntity::toModel).collect(Collectors.toList());
+                .map(PostEntity::toModel).toList();
     }
 
 }
