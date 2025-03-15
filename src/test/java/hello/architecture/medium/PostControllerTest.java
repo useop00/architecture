@@ -1,4 +1,4 @@
-package hello.architecture.post.controller;
+package hello.architecture.medium;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.architecture.post.domain.Post;

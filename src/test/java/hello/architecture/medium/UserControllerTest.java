@@ -1,4 +1,4 @@
-package hello.architecture.user.controller;
+package hello.architecture.medium;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.architecture.user.domain.User;

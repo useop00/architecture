@@ -1,9 +1,10 @@
-package hello.architecture.post.service;
+package hello.architecture.medium;
 
 import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.post.domain.Post;
 import hello.architecture.post.domain.PostCreate;
 import hello.architecture.post.domain.PostUpdate;
+import hello.architecture.post.service.PostServiceImpl;
 import hello.architecture.post.service.port.PostRepository;
 import hello.architecture.user.domain.User;
 import hello.architecture.user.service.port.UserRepository;

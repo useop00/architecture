@@ -1,4 +1,4 @@
-package hello.architecture.post.domain;
+package hello.architecture.medium;
 
 import hello.architecture.post.infrastructure.PostEntity;
 import hello.architecture.post.infrastructure.PostJpaRepository;
