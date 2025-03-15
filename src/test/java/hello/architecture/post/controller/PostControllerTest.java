@@ -2,7 +2,6 @@ package hello.architecture.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.architecture.post.domain.Post;
-import hello.architecture.post.service.PostServiceImpl;
 import hello.architecture.post.domain.PostCreate;
 import hello.architecture.post.domain.PostUpdate;
 import hello.architecture.post.service.port.PostRepository;
@@ -40,9 +39,6 @@ class PostControllerTest {
 
     @Autowired
     private PostRepository postRepository;
-
-    @Autowired
-    private PostServiceImpl postServiceImpl;
 
     @Test
     void write() throws Exception {
@@ -103,11 +99,11 @@ class PostControllerTest {
         postRepository.save(post3);
 
         // when
-        List<Post> result = postServiceImpl.findAll();
+        List<Post> posts = List.of(post1, post2, post3);
 
         // then
         mockMvc.perform(get("/posts")
-                        .content(objectMapper.writeValueAsString(result))
+                        .content(objectMapper.writeValueAsString(posts))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -149,24 +145,37 @@ class PostControllerTest {
                 .nickname("seop")
                 .build();
         User savedUser = userRepository.save(user);
-        Post post = Post.builder()
+        Post post1 = Post.builder()
                 .writer(savedUser)
                 .title("제목")
                 .content("내용")
                 .status(PUBLIC)
                 .build();
-        Post savedPost = postRepository.save(post);
+        Post post2 = Post.builder()
+                .writer(savedUser)
+                .title("제목")
+                .content("내용")
+                .status(PUBLIC)
+                .build();
+        Post post3 = Post.builder()
+                .writer(savedUser)
+                .title("제목123")
+                .content("내용123")
+                .status(PRIVATE)
+                .build();
 
-        // when
-        List<Post> result = postServiceImpl.findByWriterIdAndStatus(savedPost.getId(), PUBLIC);
+        postRepository.save(post1);
+        postRepository.save(post2);
+        postRepository.save(post3);
 
-        // then
-        mockMvc.perform(get("/posts/{id}/{status}", savedPost.getId(), savedPost.getStatus())
-                        .content(objectMapper.writeValueAsString(result))
+
+        // when & then
+        mockMvc.perform(get("/posts/{id}/{status}", savedUser.getId(), "PRIVATE")
+                        .content(objectMapper.writeValueAsString(savedUser))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("제목"))
-                .andExpect(jsonPath("$[0].content").value("내용"));
+                .andExpect(jsonPath("$[0].title").value("제목123"))
+                .andExpect(jsonPath("$[0].content").value("내용123"));
     }
 
     @Test
