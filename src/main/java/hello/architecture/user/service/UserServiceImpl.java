@@ -1,9 +1,10 @@
 package hello.architecture.user.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import hello.architecture.common.exception.UserNotFoundException;
 import hello.architecture.user.controller.port.UserService;
-import hello.architecture.user.domain.User;
 import hello.architecture.user.domain.Login;
+import hello.architecture.user.domain.User;
 import hello.architecture.user.domain.UserCreate;
 import hello.architecture.user.domain.UserUpdate;
 import hello.architecture.user.service.port.UserRepository;
@@ -17,6 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @VisibleForTesting
+    public static UserServiceImpl forTest(UserRepository userRepository) {
+        return new UserServiceImpl(userRepository);
+    }
 
     @Transactional
     public User create(UserCreate request) {

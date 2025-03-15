@@ -1,5 +1,6 @@
 package hello.architecture.post.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import hello.architecture.common.exception.PostNotFoundException;
 import hello.architecture.common.exception.UserNotFoundException;
 import hello.architecture.post.controller.port.PostService;
@@ -24,6 +25,12 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
+    @VisibleForTesting
+    public static PostServiceImpl forTest(PostRepository postRepository,
+                                          UserRepository userRepository) {
+        return new PostServiceImpl(postRepository, userRepository);
+    }
 
     @Transactional
     public Post write(PostCreate request, LocalDateTime createAt) {
